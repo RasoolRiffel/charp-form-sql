@@ -18,8 +18,11 @@ namespace Test
     {
         string connString = @"Data Source=SA-CPT-MOB-013\SQLEXPRESS;Initial Catalog=AddressBook;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 
-        SqlDataAdapter dataAdapter;
-        DataTable table;
+        SqlDataAdapter dataAdapter; // This object here allows us to buid the connection between the program and the database
+        DataTable table; //table to hold the information so we can fill the datagrid view
+        SqlCommandBuilder commandBuilder; //declare a new sql comman builder object
+        SqlConnection conn; //declares a variable to hold the sql connection
+        string selectStatement = "Select * from BizContacts";
 
         public BizContacts()
         {
@@ -34,7 +37,7 @@ namespace Test
             //Line below calls a method called GetData
             //The Arguement is a string that represents an sql query
             //Select * from BizContacts means select all the data from the biz contacts table
-            GetData("Select * from BizContacts");
+            GetData(selectStatement);
         }
 
         private void GetData(string selectCommand)
@@ -46,6 +49,7 @@ namespace Test
                 table.Locale = System.Globalization.CultureInfo.InvariantCulture;
                 dataAdapter.Fill(table);
                 bindingSource1.DataSource = table;
+                dataGridView1.Columns[0].ReadOnly = true;
             }
             catch (SqlException ex)
             {
@@ -60,7 +64,7 @@ namespace Test
             string insert = @"insert  into BizContacts(Date_Added, Company, Website, Title, First_Name, Last_name, Address, City, State, Postal_Code, Mobile, Note)
                                 values(@Date_Added, @Company, @Website, @Title, @First_Name, @Last_name, @Address, @City, @State, @Postal_Code, @Mobile, @Note)";// parameter names
 
-            using (SqlConnection conn = new SqlConnection(connString))
+            using (conn = new SqlConnection(connString))
             {
                 try
                 {
@@ -85,8 +89,62 @@ namespace Test
                     MessageBox.Show(ex.Message);
                 }
             }
-            GetData("Select * from BizContacts");
+            GetData(selectStatement);
             dataGridView1.Update();
+        }
+
+        private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            commandBuilder = new SqlCommandBuilder(dataAdapter);
+            dataAdapter.UpdateCommand = commandBuilder.GetUpdateCommand(); // get the update command
+            try
+            {
+                bindingSource1.EndEdit();// updates the table that is in the memory in out program
+                dataAdapter.Update(table);// updates the table in the database
+                MessageBox.Show("Update Successful"); // comfirms to user that update is saved to the actual table in sql server
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            DataGridViewRow row = dataGridView1.CurrentCell.OwningRow; //grab a reference to the current row
+            string value = row.Cells["ID"].Value.ToString(); // grab the value from the ID field of the selected record
+            string fname = row.Cells["First_Name"].Value.ToString(); // grab the value from the first name field of the selected record
+            string lname = row.Cells["Last_Name"].Value.ToString(); // grab the value from the last name field of the selected record
+            DialogResult result = MessageBox.Show("Do you really want to delete " + fname+ " " +lname+", record " + value, "Message", MessageBoxButtons.YesNo, MessageBoxIcon.Question );
+            string deleteStatement = @"Delete from BizContacts where id = '" + value + "'"; 
+
+            if(result == DialogResult.Yes) //chec whether the user really want to delete the record
+            {
+                using(conn = new SqlConnection(connString))
+                {
+                    try
+                    {
+                        conn.Open(); // try to open the  connection
+                        SqlCommand comm = new SqlCommand(deleteStatement, conn);
+                        comm.ExecuteNonQuery();
+                        GetData(selectStatement);
+                        dataGridView1.Update();
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+            }
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            switch (cboSearch.SelectedItem.ToString())
+            {
+                case "First Name":
+                    GetData("select * from BizContacts where lower(first_name)")
+            }
         }
     }
 }

@@ -83,7 +83,14 @@ namespace Test
                     command.Parameters.AddWithValue(@"Postal_Code", txtPCode.Text);
                     command.Parameters.AddWithValue(@"Mobile", txtMobile.Text);
                     command.Parameters.AddWithValue(@"Note", txtNotes.Text);
-                    command.Parameters.AddWithValue(@"Image", File.ReadAllBytes(openImageFile.FileName));
+                    if(openImageFile!= null)
+                    {
+                        command.Parameters.Add("@Image", SqlDbType.VarBinary).Value = DBNull.Value;
+                    } 
+                    else
+                    {
+                        command.Parameters.AddWithValue(@"Note", txtNotes.Text);
+                    }
                     command.ExecuteNonQuery();
                 }
                 catch (SqlException ex)
@@ -161,6 +168,14 @@ namespace Test
         {
             openImageFile.ShowDialog(); //Show box for selecting image from drive
             pictureBox1.Load(openImageFile.FileName);
+        }
+
+        private void pictureBox1_DoubleClick(object sender, EventArgs e)
+        {
+            Form frm = new Form();
+            frm.BackgroundImage = pictureBox1.Image;
+            frm.Size = pictureBox1.Image.Size;
+            frm.ShowDialog();
         }
     }
 }

@@ -21,7 +21,6 @@ namespace Test
 
         SqlDataAdapter dataAdapter; // This object here allows us to buid the connection between the program and the database
         DataTable table; //table to hold the information so we can fill the datagrid view
-        SqlCommandBuilder commandBuilder; //declare a new sql comman builder object
         SqlConnection conn; //declares a variable to hold the sql connection
         string selectStatement = "Select * from BizContacts";
 
@@ -104,7 +103,7 @@ namespace Test
 
         private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            commandBuilder = new SqlCommandBuilder(dataAdapter);
+            SqlCommandBuilder commandBuilder = new SqlCommandBuilder(dataAdapter);
             dataAdapter.UpdateCommand = commandBuilder.GetUpdateCommand(); // get the update command
             try
             {
@@ -166,8 +165,8 @@ namespace Test
 
         private void btnImage_Click(object sender, EventArgs e)
         {
-            openImageFile.ShowDialog(); //Show box for selecting image from drive
-            pictureBox1.Load(openImageFile.FileName);
+            if(openImageFile.ShowDialog() == DialogResult.OK) //Show box for selecting image from drive
+                pictureBox1.Load(openImageFile.FileName);
         }
 
         private void pictureBox1_DoubleClick(object sender, EventArgs e)

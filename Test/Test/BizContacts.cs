@@ -116,9 +116,10 @@ namespace Test
             string fname = row.Cells["First_Name"].Value.ToString(); // grab the value from the first name field of the selected record
             string lname = row.Cells["Last_Name"].Value.ToString(); // grab the value from the last name field of the selected record
             DialogResult result = MessageBox.Show("Do you really want to delete " + fname+ " " +lname+", record " + value, "Message", MessageBoxButtons.YesNo, MessageBoxIcon.Question );
-            string deleteStatement = @"Delete from BizContacts where id = '" + value + "'"; 
+            string deleteStatement = @"Delete from BizContacts where id = '" + value + "'";
+            //'; delete from BizContacts; --
 
-            if(result == DialogResult.Yes) //chec whether the user really want to delete the record
+            if (result == DialogResult.Yes) //chec whether the user really want to delete the record
             {
                 using(conn = new SqlConnection(connString))
                 {
@@ -143,7 +144,14 @@ namespace Test
             switch (cboSearch.SelectedItem.ToString())
             {
                 case "First Name":
-                    GetData("select * from BizContacts where lower(first_name)")
+                    GetData("select * from BizContacts where lower(first_name) like '%" + txtSearch.Text.ToLower() + "%'");
+                    break;
+                case "Last Name":
+                    GetData("select * from BizContacts where lower(last_name) like '%" + txtSearch.Text.ToLower() + "%'");
+                    break;
+                case "Company":
+                    GetData("select * from BizContacts where lower(company) like '%" + txtSearch.Text.ToLower() + "%'");
+                    break;
             }
         }
     }

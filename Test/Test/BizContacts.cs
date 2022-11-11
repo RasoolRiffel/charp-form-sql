@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 using static System.Windows.Forms.AxHost;
 
 namespace Test
@@ -61,8 +62,8 @@ namespace Test
         {
             SqlCommand command;
             //Field names in the table
-            string insert = @"insert  into BizContacts(Date_Added, Company, Website, Title, First_Name, Last_name, Address, City, State, Postal_Code, Mobile, Note)
-                                values(@Date_Added, @Company, @Website, @Title, @First_Name, @Last_name, @Address, @City, @State, @Postal_Code, @Mobile, @Note)";// parameter names
+            string insert = @"insert  into BizContacts(Date_Added, Company, Website, Title, First_Name, Last_name, Address, City, State, Postal_Code, Mobile, Note, Image)
+                                values(@Date_Added, @Company, @Website, @Title, @First_Name, @Last_name, @Address, @City, @State, @Postal_Code, @Mobile, @Note, @Image)";// parameter names
 
             using (conn = new SqlConnection(connString))
             {
@@ -82,6 +83,7 @@ namespace Test
                     command.Parameters.AddWithValue(@"Postal_Code", txtPCode.Text);
                     command.Parameters.AddWithValue(@"Mobile", txtMobile.Text);
                     command.Parameters.AddWithValue(@"Note", txtNotes.Text);
+                    command.Parameters.AddWithValue(@"Image", File.ReadAllBytes(openImageFile.FileName));
                     command.ExecuteNonQuery();
                 }
                 catch (SqlException ex)
@@ -153,6 +155,12 @@ namespace Test
                     GetData("select * from BizContacts where lower(company) like '%" + txtSearch.Text.ToLower() + "%'");
                     break;
             }
+        }
+
+        private void btnImage_Click(object sender, EventArgs e)
+        {
+            openImageFile.ShowDialog(); //Show box for selecting image from drive
+            pictureBox1.Load(openImageFile.FileName);
         }
     }
 }

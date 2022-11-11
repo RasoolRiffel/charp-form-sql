@@ -62,8 +62,12 @@
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
             this.title = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.btnImage = new System.Windows.Forms.Button();
+            this.openImageFile = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // label2
@@ -263,7 +267,7 @@
             this.txtNotes.Location = new System.Drawing.Point(604, 119);
             this.txtNotes.Multiline = true;
             this.txtNotes.Name = "txtNotes";
-            this.txtNotes.Size = new System.Drawing.Size(300, 243);
+            this.txtNotes.Size = new System.Drawing.Size(300, 82);
             this.txtNotes.TabIndex = 27;
             // 
             // btnSearch
@@ -337,12 +341,37 @@
             this.title.TabIndex = 0;
             this.title.Text = "Title";
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(604, 223);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(225, 225);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 34;
+            this.pictureBox1.TabStop = false;
+            // 
+            // btnImage
+            // 
+            this.btnImage.Location = new System.Drawing.Point(497, 223);
+            this.btnImage.Name = "btnImage";
+            this.btnImage.Size = new System.Drawing.Size(94, 29);
+            this.btnImage.TabIndex = 35;
+            this.btnImage.Text = "Save Image";
+            this.btnImage.UseVisualStyleBackColor = true;
+            this.btnImage.Click += new System.EventHandler(this.btnImage_Click);
+            // 
+            // openImageFile
+            // 
+            this.openImageFile.FileName = "openFileDialog1";
+            // 
             // BizContacts
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1120, 819);
+            this.Controls.Add(this.btnImage);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.cboSearch);
             this.Controls.Add(this.btnDelete);
@@ -380,6 +409,7 @@
             this.Load += new System.EventHandler(this.BizContacts_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.bindingSource1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -419,5 +449,8 @@
         private DataGridView dataGridView1;
         private BindingSource bindingSource1;
         private Label title;
+        private PictureBox pictureBox1;
+        private Button btnImage;
+        private OpenFileDialog openImageFile;
     }
 }
